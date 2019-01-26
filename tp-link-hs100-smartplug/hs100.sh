@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ##
 #  Controls TP-LINK HS100,HS110, HS200 wlan smart plugs
@@ -67,16 +67,15 @@ send_to_plug() {
 decode(){
    code=171
    offset=4
-   input_num=`od -j $offset -An -t u1 -v | tr "\n" " "`
-   IFS=' ' read -r -a array <<< "$input_num"
+   input_num=$(od -j $offset -An -t u1 -v | tr "\n" " ")
    args_for_printf=""
-   for element in "${array[@]}"
+   for element in $input_num
    do
      output=$(( $element ^ $code ))
      args_for_printf="$args_for_printf\x$(printf %x $output)"
      code=$element
    done
-     printf "$args_for_printf"
+   eval $(which printf) "$args_for_printf"
 }
 
 query_plug(){
